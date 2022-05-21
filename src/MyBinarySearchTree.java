@@ -1,3 +1,5 @@
+import java.util.Stack;
+
 public class MyBinarySearchTree<Type extends Comparable<Type>> {
 
     class Node {
@@ -19,8 +21,7 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
     private int size;
     public long comparisons;
 
-    public MyBinarySearchTree(boolean b) {
-        boolean b1 = b;
+    public MyBinarySearchTree() {
         root = null;
         size = 0;
         comparisons = 0;
@@ -120,15 +121,26 @@ public class MyBinarySearchTree<Type extends Comparable<Type>> {
     public boolean isEmpty() {
         return root == null;
     }
+
     @Override
     public String toString() {
-        return toString(root);
-    }
-
-    private String toString(Node root) {
-        if (root == null) {
-            return "";
+        if(root == null)
+            return "[]";
+        StringBuilder sb = new StringBuilder("[");
+        Stack<Node> stack = new Stack<>();
+        Node current = root;
+        while(!stack.isEmpty() || current != null) {
+            while(current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+            current = stack.pop();
+            sb.append(current);
+            current = current.right;
+            if(!stack.isEmpty() || current != null)
+                sb.append(", ");
         }
-        return toString(root.left) + root.toString() + toString(root.right);
+
+        return sb.append("]").toString();
     }
 }

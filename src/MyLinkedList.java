@@ -1,4 +1,4 @@
-public class MyLinkedList<Type> {
+public class MyLinkedList<Type extends Comparable <Type>> {
     private class Node {
         public Type item;
         public Node next;
@@ -22,6 +22,7 @@ public class MyLinkedList<Type> {
     public Node cur = first;
     public Node prev;
     public int size = 0;
+    public int comparisons = 0;
 
     public Type first() {
         Type item = null;
@@ -91,10 +92,9 @@ public class MyLinkedList<Type> {
         if (cur != null) {
             prev = cur;
             cur = cur.next;
-            return cur.item;
-        } else {
-            return null;
+            return cur == null ? null : current();
         }
+        return null;
     }
 
     public Type remove() {
@@ -122,14 +122,19 @@ public class MyLinkedList<Type> {
     }
 
     public boolean contains(Type item) {
+        comparisons++;
+        if (size == 0) {
+            return false;
+        }
         Node tempNode = first;
-        while (tempNode.item != item) {
-            if (tempNode.next == null) {
-                return false;
+        while (tempNode != null) {
+            comparisons++;
+            if (tempNode.item.compareTo(item) == 0) {
+                return true;
             }
             tempNode = tempNode.next;
         }
-        return true;
+        return false;
     }
 
     public int size() {
@@ -141,21 +146,15 @@ public class MyLinkedList<Type> {
     }
 
     public String toString() {
-        StringBuilder list = new StringBuilder();
-        list.append("[");
-        Node tempNode = first;
-
-        if (tempNode == null) {
-            list.append("]");
+        if(isEmpty())
+            return "[]";
+        String s = "[";
+        Node temp = first;
+        while (temp != null) {
+            s = s.concat(temp.toString());
+            s = s.concat(temp.next == null ? "]" : ", ");
+            temp = temp.next;
         }
-        while (tempNode != null) {
-            if (tempNode.next == null) {
-                list.append(tempNode.item + "]");
-            } else {
-                list.append(tempNode.item + ", ");
-            }
-            tempNode = tempNode.next;
-        }
-        return list.toString();
+        return s;
     }
 }
